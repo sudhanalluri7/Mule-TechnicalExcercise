@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="5557a656-2244-437e-aacb-2c67eae31f42" basePath="/api">
+		<http:request-connection host="${system.api.http.host}" port="${systme.api.http.port}" />
+	</http:request-config>
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="9b4c62a1-bae3-40c5-a032-5fb60585d1f6" basePath="/api" >
+		<http:request-connection host="${system.api.http.host}" port="${system.api.http.port}" />
+	</http:request-config>
+	<sub-flow name="call-system-api-get-cities" doc:id="038df826-31de-40a6-aeac-d3de984d4e55" >
+		<logger level="INFO" doc:name="Logger" doc:id="c45d39ab-80c6-4582-ab70-65d8d25ead4d" message="#[correlationID] - START - syatem api - get cities]"/>
+		<http:request method="GET" doc:name="Get Cities Request" doc:id="1eeb51f2-2307-4f8e-b556-091053cac142" config-ref="HTTP_Request_configuration" path="/getCities"/>
+	</sub-flow>
+	<sub-flow name="call-system-api-get-weather" doc:id="01d4c8a7-edfd-46cb-a161-01e7237eadf8" >
+		<logger level="INFO" doc:name="Logger" doc:id="3eb74c7c-2082-4ac2-abca-e58ccb9696a1" message="#[correlationID] - START - get weather system api]"/>
+		<http:request method="GET" doc:name=" GET Weather Request" doc:id="5ebc792e-b6d8-437f-b5cc-e542772db92a" config-ref="HTTP_Request_configuration1" path="/getWeather"/>
+	</sub-flow>
+</mule>

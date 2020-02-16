@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="deloitte-weather-api-test-suite.xml" />
+	<munit:test name="deloitte-weather-api-test-suite-post:\getCities:application\json:deloitte-weather-api-configTest" description="Test" doc:id="bb70edec-31a0-4d8d-8c9a-059d0ac856c1" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="5060d6aa-f4b9-45d7-b495-7ebd05cf35ac" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute attributeName="doc:name" whereValue="Get Cities Request" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{
+  "countryName" : "USA"
+}]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\getCities:application\json:deloitte-weather-api-config" doc:id="b938eb9d-9588-491e-aa45-e26b6962fb13" name="post:\getCities:application\json:deloitte-weather-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="caaf996a-e784-4a8b-b94f-190ed8106b13" expression="#[payload]" is="#[MunitTools::notNullValue()]" message="The payload should not be null"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="deloitte-weather-api-test-suite-post:\getCities:application\json:deloitte-weather-api-configTest1" description="Test" doc:id="7be31338-2cc9-41f3-9d98-c73c87ab3b90" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="db3b3ef8-eca9-4228-9e27-517fe99a4c11" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute attributeName="doc:name" whereValue="Get Weather Request" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{
+  "cityName" :  "UA",
+  "countryName" : "USA"
+ }]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\getCities:application\json:deloitte-weather-api-config" doc:id="0079eb2e-b5ce-4655-b3b5-5b591762be6b" name="post:\getCities:application\json:deloitte-weather-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="091015bd-f417-4aba-9688-693097217b35" expression="#[payload]" is="#[MunitTools::notNullValue()]" message="The payload should not be null"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+    <http:listener-config name="deloitte-weather-api-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+    <apikit:config name="deloitte-weather-api-config" raml="deloitte-weather-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <configuration doc:name="Configuration" doc:id="16c3abfc-3bd0-479b-9bd3-65117ab6e2e5" defaultErrorHandler-ref="common-error-handlerError_Handler" />
+	<configuration-properties doc:name="Configuration properties" doc:id="0fc4d146-ab8d-4f43-a228-d99dece643f8" file="local.properties" />
+	<global-property doc:name="Global Property" doc:id="cf5ff7e0-73c3-44fc-ad04-b4e8402787e5" name="env" value="local" />
+	<api-gateway:autodiscovery apiId="${api.id}" doc:name="API Autodiscovery" doc:id="ebd8cd46-fc30-4c79-a50e-2ed324c59b49" flowRef="deloitte-weather-api-main" />
+	<flow name="deloitte-weather-api-main">
+        <http:listener config-ref="deloitte-weather-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="deloitte-weather-api-config" />
+    </flow>
+    <flow name="deloitte-weather-api-console">
+        <http:listener config-ref="deloitte-weather-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="deloitte-weather-api-config" />
+    </flow>
+    <flow name="post:\getCities:application\json:deloitte-weather-api-config">
+        <logger level="INFO" message="post:\getCities:application\json:deloitte-weather-api-config" />
+		<flow-ref doc:name="Flow Reference" doc:id="a4108494-682f-4832-b693-7fbb74229c69" name="call-system-api-get-cities"/>
+    </flow>
+    <flow name="post:\getWeather:application\json:deloitte-weather-api-config">
+        <logger level="INFO" message="post:\getWeather:application\json:deloitte-weather-api-config" />
+		<flow-ref doc:name="Flow Reference" doc:id="437acf50-2e12-4f2d-b400-294fc6157d41" name="call-system-api-get-weather"/>
+    </flow>
+</mule>
